@@ -1,4 +1,6 @@
 .DS_Store
+src/.vs/**
+build/**
 *.Designer.cs
 *.csproj.user
 *.pfx
