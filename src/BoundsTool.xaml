@@ -1,0 +1,41 @@
+﻿<local:Tool
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	x:Class="Rooler.BoundsTool"
+	Foreground='Red'
+	xmlns:local="clr-namespace:Rooler" 
+	mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="400">
+	
+	<local:Tool.Resources>
+		<SolidColorBrush x:Key="MaskBackground" Color="#70CFCFCF"/>
+	</local:Tool.Resources>
+
+	<Grid x:Name='LayoutRoot'>
+		
+		<Grid x:Name="Boundary" >
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" x:Name='BoundsOffsetX'/>
+				<ColumnDefinition Width="100" x:Name='BoundsWidth'/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*" x:Name='BoundsOffsetY'/>
+				<RowDefinition Height="100" x:Name='BoundsHeight'/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			
+			<Rectangle Fill="{DynamicResource MaskBackground}" Grid.ColumnSpan="3"/>
+			<Rectangle Fill="{DynamicResource MaskBackground}" Grid.Row="2" Grid.ColumnSpan="3"/>
+			<Rectangle Fill="{DynamicResource MaskBackground}" Grid.Row="1"/>
+			<Rectangle Fill="{DynamicResource MaskBackground}" Grid.Row="1" Grid.Column="2"/>
+			<Rectangle x:Name='BoundsRect' Visibility='Collapsed' Stroke='Red' StrokeThickness='1' Grid.Row="1" Grid.Column="1" />
+			<Canvas HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="2" Grid.Column="2" Margin="3,23,0,0">
+				<local:Dimensions x:Name="Dimensions" Text="100 x 100" Canvas.Top="-20"/>
+			</Canvas>
+		</Grid>
+
+	</Grid>
+</local:Tool>

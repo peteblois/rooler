@@ -1,0 +1,13 @@
+﻿<Window x:Class="Rooler.Crash"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Crash" Height="480" Width="640">
+    <Grid>
+
+		<TextBox IsReadOnly='True' x:Name='TB' Margin="0,0,0,20"/>
+		<TextBlock HorizontalAlignment="Left" VerticalAlignment="Bottom" TextWrapping="Wrap" Margin="8,0,0,0">
+			<Hyperlink x:Name='Hyperlink' NavigateUri='mailto:rooler@blois.us?subject=Rooler suxxorz'>Feel free to email me about this</Hyperlink>
+		</TextBlock>
+
+	</Grid>
+</Window>

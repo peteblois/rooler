@@ -1,0 +1,736 @@
+﻿<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" x:Class="Rooler.MainWindow"
+		WindowStyle='None'
+	AllowsTransparency='True'
+	SnapsToDevicePixels='True'
+	Background='#0000FF00'
+	Foreground="#FFFFFFFF">
+	<!--Background='#00FFFFFF'-->
+	
+	<Window.Resources>
+		<LinearGradientBrush x:Key="MouseOverBackground" EndPoint="0.5,1" StartPoint="0.5,0">
+			<GradientStop Color="#FF797979" Offset="0.504"/>
+			<GradientStop Color="#FF9B9B9B" Offset="0.46"/>
+		</LinearGradientBrush>
+		<Style x:Key="SimpleToggle" TargetType="{x:Type ButtonBase}">
+			<Setter Property="Background" Value="#00777777"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+			<Setter Property="VerticalContentAlignment" Value="Stretch"/>
+			<Setter Property="Padding" Value="1"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ButtonBase}">
+						<Grid>
+							<Border Background="{TemplateBinding Background}" CornerRadius="3,3,3,3"/>
+							<ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" RecognizesAccessKey="True"/>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+			<Setter Property="Width" Value="25"/>
+			<Setter Property="Height" Value="25"/>
+			<Style.Triggers>
+				<Trigger Property="IsMouseOver" Value="True">
+					<Setter Property="Background" Value="{DynamicResource MouseOverBackground}"/>
+				</Trigger>
+				
+			</Style.Triggers>
+		</Style>
+		<SolidColorBrush x:Key="Redline" Color="#FFE40000"/>
+		<LinearGradientBrush x:Key="ExpanderArrowHoverFill" EndPoint="0,1" StartPoint="0,0">
+			<GradientStop Color="#FFF0F8FE" Offset="0"/>
+			<GradientStop Color="#FFE0F3FE" Offset="0.3"/>
+			<GradientStop Color="#FF6FA7C5" Offset="1"/>
+		</LinearGradientBrush>
+		<LinearGradientBrush x:Key="ExpanderArrowPressedFill" EndPoint="0,1" StartPoint="0,0">
+			<GradientStop Color="#FFDCF0FA" Offset="0"/>
+			<GradientStop Color="#FFC5E6F7" Offset="0.2"/>
+			<GradientStop Color="#FF5690D0" Offset="1"/>
+		</LinearGradientBrush>
+		<LinearGradientBrush x:Key="ExpanderArrowFill" EndPoint="0,1" StartPoint="0,0">
+			<GradientStop Color="White" Offset="0"/>
+			<GradientStop Color="#FFBFBFBF" Offset="0.5"/>
+			<GradientStop Color="#FF878787" Offset="1"/>
+		</LinearGradientBrush>
+		<Style x:Key="ExpanderRightHeaderStyle" TargetType="{x:Type ToggleButton}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ToggleButton}">
+						<Border Padding="{TemplateBinding Padding}">
+							<Grid SnapsToDevicePixels="False" Background="Transparent">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="19"/>
+									<RowDefinition Height="*"/>
+								</Grid.RowDefinitions>
+								<Grid>
+									<Grid.LayoutTransform>
+										<TransformGroup>
+											<TransformGroup.Children>
+												<TransformCollection>
+													<RotateTransform Angle="-90"/>
+												</TransformCollection>
+											</TransformGroup.Children>
+										</TransformGroup>
+									</Grid.LayoutTransform>
+									<Ellipse x:Name="circle" Fill="{DynamicResource ExpanderArrowFill}" Stroke="DarkGray" HorizontalAlignment="Center" VerticalAlignment="Center" Width="19" Height="19"/>
+									<Path x:Name="arrow" Stroke="#666" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="false" Data="M 1,1.5 L 4.5,5 L 8,1.5"/>
+								</Grid>
+								<ContentPresenter HorizontalAlignment="Center" Margin="0,4,0,0" VerticalAlignment="Top" SnapsToDevicePixels="True" Grid.Row="1" RecognizesAccessKey="True"/>
+							</Grid>
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsChecked" Value="true">
+								<Setter Property="Data" TargetName="arrow" Value="M 1,4.5  L 4.5,1  L 8,4.5"/>
+							</Trigger>
+							<Trigger Property="IsMouseOver" Value="true">
+								<Setter Property="Stroke" TargetName="circle" Value="#FF3C7FB1"/>
+								<Setter Property="Fill" TargetName="circle" Value="{DynamicResource ExpanderArrowHoverFill}"/>
+								<Setter Property="Stroke" TargetName="arrow" Value="#222"/>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="true">
+								<Setter Property="Stroke" TargetName="circle" Value="#FF526C7B"/>
+								<Setter Property="StrokeThickness" TargetName="circle" Value="1.5"/>
+								<Setter Property="Fill" TargetName="circle" Value="{DynamicResource ExpanderArrowPressedFill}"/>
+								<Setter Property="Stroke" TargetName="arrow" Value="#FF003366"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style x:Key="ExpanderUpHeaderStyle" TargetType="{x:Type ToggleButton}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ToggleButton}">
+						<Border Padding="{TemplateBinding Padding}">
+							<Grid SnapsToDevicePixels="False" Background="Transparent">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="19"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Grid>
+									<Grid.LayoutTransform>
+										<TransformGroup>
+											<TransformGroup.Children>
+												<TransformCollection>
+													<RotateTransform Angle="180"/>
+												</TransformCollection>
+											</TransformGroup.Children>
+										</TransformGroup>
+									</Grid.LayoutTransform>
+									<Ellipse x:Name="circle" Fill="{DynamicResource ExpanderArrowFill}" Stroke="DarkGray" HorizontalAlignment="Center" VerticalAlignment="Center" Width="19" Height="19"/>
+									<Path x:Name="arrow" Stroke="#666" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="false" Data="M 1,1.5 L 4.5,5 L 8,1.5"/>
+								</Grid>
+								<ContentPresenter HorizontalAlignment="Left" Margin="4,0,0,0" VerticalAlignment="Center" SnapsToDevicePixels="True" Grid.Column="1" RecognizesAccessKey="True"/>
+							</Grid>
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsChecked" Value="true">
+								<Setter Property="Data" TargetName="arrow" Value="M 1,4.5  L 4.5,1  L 8,4.5"/>
+							</Trigger>
+							<Trigger Property="IsMouseOver" Value="true">
+								<Setter Property="Stroke" TargetName="circle" Value="#FF3C7FB1"/>
+								<Setter Property="Fill" TargetName="circle" Value="{DynamicResource ExpanderArrowHoverFill}"/>
+								<Setter Property="Stroke" TargetName="arrow" Value="#222"/>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="true">
+								<Setter Property="Stroke" TargetName="circle" Value="#FF526C7B"/>
+								<Setter Property="StrokeThickness" TargetName="circle" Value="1.5"/>
+								<Setter Property="Fill" TargetName="circle" Value="{DynamicResource ExpanderArrowPressedFill}"/>
+								<Setter Property="Stroke" TargetName="arrow" Value="#FF003366"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style x:Key="ExpanderLeftHeaderStyle" TargetType="{x:Type ToggleButton}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ToggleButton}">
+						<Border Padding="{TemplateBinding Padding}">
+							<Grid SnapsToDevicePixels="False" Background="Transparent">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="19"/>
+									<RowDefinition Height="*"/>
+								</Grid.RowDefinitions>
+								<Grid>
+									<Grid.LayoutTransform>
+										<TransformGroup>
+											<TransformGroup.Children>
+												<TransformCollection>
+													<RotateTransform Angle="90"/>
+												</TransformCollection>
+											</TransformGroup.Children>
+										</TransformGroup>
+									</Grid.LayoutTransform>
+									<Ellipse x:Name="circle" Fill="{DynamicResource ExpanderArrowFill}" Stroke="DarkGray" HorizontalAlignment="Center" VerticalAlignment="Center" Width="19" Height="19"/>
+									<Path x:Name="arrow" Stroke="#666" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="false" Data="M 1,1.5 L 4.5,5 L 8,1.5"/>
+								</Grid>
+								<ContentPresenter HorizontalAlignment="Center" Margin="0,4,0,0" VerticalAlignment="Top" SnapsToDevicePixels="True" Grid.Row="1" RecognizesAccessKey="True"/>
+							</Grid>
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsChecked" Value="true">
+								<Setter Property="Data" TargetName="arrow" Value="M 1,4.5  L 4.5,1  L 8,4.5"/>
+							</Trigger>
+							<Trigger Property="IsMouseOver" Value="true">
+								<Setter Property="Stroke" TargetName="circle" Value="#FF3C7FB1"/>
+								<Setter Property="Fill" TargetName="circle" Value="{DynamicResource ExpanderArrowHoverFill}"/>
+								<Setter Property="Stroke" TargetName="arrow" Value="#222"/>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="true">
+								<Setter Property="Stroke" TargetName="circle" Value="#FF526C7B"/>
+								<Setter Property="StrokeThickness" TargetName="circle" Value="1.5"/>
+								<Setter Property="Fill" TargetName="circle" Value="{DynamicResource ExpanderArrowPressedFill}"/>
+								<Setter Property="Stroke" TargetName="arrow" Value="#FF003366"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style x:Key="ExpanderHeaderFocusVisual">
+			<Setter Property="Control.Template">
+				<Setter.Value>
+					<ControlTemplate>
+						<Border>
+							<Rectangle Stroke="Black" StrokeDashArray="1 2" StrokeThickness="1" Margin="0" SnapsToDevicePixels="true"/>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style x:Key="ExpanderDownHeaderStyle" TargetType="{x:Type ToggleButton}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ToggleButton}">
+						<Border Padding="{TemplateBinding Padding}">
+							<Grid SnapsToDevicePixels="False" Background="Transparent">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="19"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Ellipse x:Name="circle" Stroke="{DynamicResource ButtonBackground}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="19" Height="19" Fill="#00000000"/>
+								<Path x:Name="arrow" Stroke="#666" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="false" Data="M 1,1.5 L 4.5,5 L 8,1.5"/>
+								<ContentPresenter HorizontalAlignment="Left" Margin="4,0,0,0" VerticalAlignment="Center" SnapsToDevicePixels="True" Grid.Column="1" RecognizesAccessKey="True"/>
+							</Grid>
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsChecked" Value="true">
+								<Setter Property="Data" TargetName="arrow" Value="M 1,4.5  L 4.5,1  L 8,4.5"/>
+							</Trigger>
+							<Trigger Property="IsMouseOver" Value="true">
+								<Setter Property="Fill" TargetName="circle" Value="#90707070"/>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="true">
+								<Setter Property="StrokeThickness" TargetName="circle" Value="1.5"/>
+								<Setter Property="Fill" TargetName="circle" Value="#90707070"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style x:Key="PrefsExpander" TargetType="{x:Type Expander}">
+			<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+			<Setter Property="VerticalContentAlignment" Value="Stretch"/>
+			<Setter Property="BorderBrush" Value="Transparent"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Expander}">
+						<Border SnapsToDevicePixels="true" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3">
+							<DockPanel>
+								<ToggleButton x:Name="HeaderSite" FocusVisualStyle="{StaticResource ExpanderHeaderFocusVisual}" Margin="1" MinHeight="0" MinWidth="0" Style="{StaticResource ExpanderDownHeaderStyle}" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontStretch="{TemplateBinding FontStretch}" FontStyle="{TemplateBinding FontStyle}" FontWeight="{TemplateBinding FontWeight}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" DockPanel.Dock="Top" HorizontalAlignment="Right">
+									<ToggleButton.Background>
+										<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+											<GradientStop Color="#FFF3F3F3" Offset="0"/>
+											<GradientStop Color="#FFEBEBEB" Offset="0.5"/>
+											<GradientStop Color="#FFDDDDDD" Offset="0.5"/>
+											<GradientStop Color="#00CDCDCD" Offset="1"/>
+										</LinearGradientBrush>
+									</ToggleButton.Background>
+								</ToggleButton>
+								<ContentPresenter x:Name="ExpandSite" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Focusable="false" Visibility="Collapsed" DockPanel.Dock="Bottom"/>
+							</DockPanel>
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsExpanded" Value="true">
+								<Setter Property="Visibility" TargetName="ExpandSite" Value="Visible"/>
+							</Trigger>
+							<Trigger Property="IsEnabled" Value="false">
+								<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<LinearGradientBrush x:Key="HorizontalSliderThumbHoverBackgroundInverted" EndPoint="0,0" StartPoint="0,1">
+			<GradientStop Color="white" Offset="0"/>
+			<GradientStop Color="#B8E2F9" Offset="0.5"/>
+			<GradientStop Color="#B0DFF8" Offset="1"/>
+		</LinearGradientBrush>
+		<SolidColorBrush x:Key="HorizontalSliderThumbHoverBorder" Color="#3C7FB1"/>
+		<LinearGradientBrush x:Key="HorizontalSliderThumbPressedBackgroundInverted" EndPoint="0,0" StartPoint="0,1">
+			<GradientStop Color="#B8E4FA" Offset="0.25"/>
+			<GradientStop Color="#5EB4E3" Offset="0.5"/>
+			<GradientStop Color="#4C8BB4" Offset="1"/>
+		</LinearGradientBrush>
+		<SolidColorBrush x:Key="HorizontalSliderThumbPressedBorder" Color="#2C628B"/>
+		<Geometry x:Key="SliderThumbDisabledGeometry">M -5,-10.5 L 5,-10.5 L 5,10.5 L -5,10.5 Z</Geometry>
+		<Geometry x:Key="SliderPointedThumbDisabledGeometry">M 4.5,-8.5 L -4.5,-8.5 L -4.5,4.5 L -0.5,8.5 L 0.5,8.5 L 4.5,4.5 Z</Geometry>
+		<LinearGradientBrush x:Key="HorizontalSliderThumbNormalBackgroundInverted" EndPoint="0,0" StartPoint="0,1">
+			<GradientStop Color="White" Offset="0"/>
+			<GradientStop Color="#F0EFEF" Offset="0.4"/>
+			<GradientStop Color="#D6D5D5" Offset=".8"/>
+		</LinearGradientBrush>
+		<Geometry x:Key="SliderPointedThumbOuterBorderGeometry">M 4.5,-7.5 A 1 1 0 0 0 3.5,-8.5 L -3.5,-8.5 A 1 1 0 0 0 -4.5,-7.5 L -4.5,4.5 L -0.5,8.5 L 0.5,8.5 L 4.5,4.5 Z</Geometry>
+		<Geometry x:Key="SliderPointedThumbMiddleBorderGeometry">M 3.5,-7.5 L -3.5,-7.5 L -3.5,4.5 L 0,8 L 3.5,4.5 Z</Geometry>
+		<Style x:Key="HorizontalSliderUpThumbStyle" TargetType="{x:Type Thumb}">
+			<Setter Property="Focusable" Value="false"/>
+			<Setter Property="OverridesDefaultStyle" Value="true"/>
+			<Setter Property="Height" Value="18"/>
+			<Setter Property="Width" Value="10"/>
+			<Setter Property="Foreground" Value="Gray"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Thumb}">
+						<Canvas SnapsToDevicePixels="true">
+							<Canvas.RenderTransform>
+								<TransformGroup>
+									<TransformGroup.Children>
+										<TransformCollection>
+											<RotateTransform Angle="180"/>
+											<TranslateTransform X="5" Y="9"/>
+										</TransformCollection>
+									</TransformGroup.Children>
+								</TransformGroup>
+							</Canvas.RenderTransform>
+							<Path x:Name="Background" Fill="{StaticResource HorizontalSliderThumbNormalBackgroundInverted}" Data="{StaticResource SliderPointedThumbOuterBorderGeometry}"/>
+							<Path x:Name="InnerBorder" Stroke="White" StrokeThickness="1" Data="{StaticResource SliderPointedThumbMiddleBorderGeometry}"/>
+							<Path x:Name="OuterBorder" Stroke="#FF929292" StrokeThickness="1" Data="{StaticResource SliderPointedThumbOuterBorderGeometry}"/>
+						</Canvas>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="true">
+								<Setter Property="Fill" TargetName="Background" Value="{StaticResource HorizontalSliderThumbHoverBackgroundInverted}"/>
+								<Setter Property="Stroke" TargetName="OuterBorder" Value="{StaticResource HorizontalSliderThumbHoverBorder}"/>
+							</Trigger>
+							<Trigger Property="Foreground" Value="Blue">
+								<Setter Property="Fill" TargetName="Background" Value="{StaticResource HorizontalSliderThumbHoverBackgroundInverted}"/>
+								<Setter Property="Stroke" TargetName="OuterBorder" Value="{StaticResource HorizontalSliderThumbHoverBorder}"/>
+							</Trigger>
+							<Trigger Property="IsDragging" Value="true">
+								<Setter Property="Fill" TargetName="Background" Value="{StaticResource HorizontalSliderThumbPressedBackgroundInverted}"/>
+								<Setter Property="Stroke" TargetName="OuterBorder" Value="{StaticResource HorizontalSliderThumbPressedBorder}"/>
+							</Trigger>
+							<Trigger Property="IsEnabled" Value="false">
+								<Setter Property="Fill" TargetName="Background" Value="#FFF4F4F4"/>
+								<Setter Property="Stroke" TargetName="InnerBorder" Value="{x:Null}"/>
+								<Setter Property="Data" TargetName="OuterBorder" Value="{StaticResource SliderThumbDisabledGeometry}"/>
+								<Setter Property="Stroke" TargetName="OuterBorder" Value="#FFAEB1AF"/>
+								<Setter Property="Data" TargetName="OuterBorder" Value="{StaticResource SliderPointedThumbDisabledGeometry}"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<LinearGradientBrush x:Key="HorizontalSliderThumbHoverBackground" EndPoint="0,1" StartPoint="0,0">
+			<GradientStop Color="white" Offset="0"/>
+			<GradientStop Color="#B8E2F9" Offset="0.5"/>
+			<GradientStop Color="#B0DFF8" Offset="1"/>
+		</LinearGradientBrush>
+		<LinearGradientBrush x:Key="HorizontalSliderThumbPressedBackground" EndPoint="0,1" StartPoint="0,0">
+			<GradientStop Color="#B8E4FA" Offset="0.25"/>
+			<GradientStop Color="#5EB4E3" Offset="0.5"/>
+			<GradientStop Color="#4C8BB4" Offset="1"/>
+		</LinearGradientBrush>
+		<LinearGradientBrush x:Key="HorizontalSliderThumbNormalBackground" EndPoint="0,1" StartPoint="0,0">
+			<GradientStop Color="White" Offset="0"/>
+			<GradientStop Color="#F0EFEF" Offset="0.4"/>
+			<GradientStop Color="#D6D5D5" Offset=".8"/>
+		</LinearGradientBrush>
+		<Style x:Key="HorizontalSliderDownThumbStyle" TargetType="{x:Type Thumb}">
+			<Setter Property="Focusable" Value="false"/>
+			<Setter Property="OverridesDefaultStyle" Value="true"/>
+			<Setter Property="Height" Value="18"/>
+			<Setter Property="Width" Value="10"/>
+			<Setter Property="Foreground" Value="Gray"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Thumb}">
+						<Canvas SnapsToDevicePixels="true">
+							<Canvas.RenderTransform>
+								<TranslateTransform X="5" Y="9"/>
+							</Canvas.RenderTransform>
+							<Path x:Name="Background" Fill="{StaticResource HorizontalSliderThumbNormalBackground}" Data="{StaticResource SliderPointedThumbOuterBorderGeometry}"/>
+							<Path x:Name="InnerBorder" Stroke="White" StrokeThickness="1" Data="{StaticResource SliderPointedThumbMiddleBorderGeometry}"/>
+							<Path x:Name="OuterBorder" Stroke="#FF929292" StrokeThickness="1" Data="{StaticResource SliderPointedThumbOuterBorderGeometry}"/>
+						</Canvas>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="true">
+								<Setter Property="Fill" TargetName="Background" Value="{StaticResource HorizontalSliderThumbHoverBackground}"/>
+								<Setter Property="Stroke" TargetName="OuterBorder" Value="{StaticResource HorizontalSliderThumbHoverBorder}"/>
+							</Trigger>
+							<Trigger Property="Foreground" Value="Blue">
+								<Setter Property="Fill" TargetName="Background" Value="{StaticResource HorizontalSliderThumbHoverBackground}"/>
+								<Setter Property="Stroke" TargetName="OuterBorder" Value="{StaticResource HorizontalSliderThumbHoverBorder}"/>
+							</Trigger>
+							<Trigger Property="IsDragging" Value="true">
+								<Setter Property="Fill" TargetName="Background" Value="{StaticResource HorizontalSliderThumbPressedBackground}"/>
+								<Setter Property="Stroke" TargetName="OuterBorder" Value="{StaticResource HorizontalSliderThumbPressedBorder}"/>
+							</Trigger>
+							<Trigger Property="IsEnabled" Value="false">
+								<Setter Property="Fill" TargetName="Background" Value="#FFF4F4F4"/>
+								<Setter Property="Stroke" TargetName="InnerBorder" Value="{x:Null}"/>
+								<Setter Property="Data" TargetName="OuterBorder" Value="{StaticResource SliderThumbDisabledGeometry}"/>
+								<Setter Property="Stroke" TargetName="OuterBorder" Value="#FFAEB1AF"/>
+								<Setter Property="Data" TargetName="OuterBorder" Value="{StaticResource SliderPointedThumbDisabledGeometry}"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<SolidColorBrush x:Key="HorizontalSliderTrackNormalBackground" Color="#FFE7EAEA"/>
+		<LinearGradientBrush x:Key="HorizontalSliderTrackNormalBorder" EndPoint="0,1" StartPoint="0,0">
+			<GradientStop Color="#FFAEB1AF" Offset="0.1"/>
+			<GradientStop Color="White" Offset=".9"/>
+		</LinearGradientBrush>
+		<Style x:Key="SliderRepeatButtonStyle" TargetType="{x:Type RepeatButton}">
+			<Setter Property="OverridesDefaultStyle" Value="true"/>
+			<Setter Property="IsTabStop" Value="false"/>
+			<Setter Property="Focusable" Value="false"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type RepeatButton}">
+						<Rectangle Fill="Transparent"/>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Geometry x:Key="SliderThumbOuterBorderGeometry">M -5,-9.5 A 1 1 0 0 1 -4,-10.5 L 4,-10.5 A 1 1 0 0 1 5,-9.5 L 5,9.5 A 1 1 0 0 1 4,10.5 L -4,10.5 A 1 1 0 0 1 -5,9.5 Z</Geometry>
+		<Geometry x:Key="SliderThumbMiddleBorderGeometry">M -4,-9.5 L 4,-9.5 L 4,9.5 L -4,9.5 Z</Geometry>
+		<Style x:Key="HorizontalSliderThumbStyle" TargetType="{x:Type Thumb}">
+			<Setter Property="Focusable" Value="false"/>
+			<Setter Property="OverridesDefaultStyle" Value="true"/>
+			<Setter Property="Height" Value="22"/>
+			<Setter Property="Width" Value="11"/>
+			<Setter Property="Foreground" Value="Gray"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Thumb}">
+						<Canvas SnapsToDevicePixels="true">
+							<Canvas.RenderTransform>
+								<TranslateTransform X="5.5" Y="11"/>
+							</Canvas.RenderTransform>
+							<Path Fill="#FFA9A9A9" Stretch="Fill" Stroke="#FFA9A9A9" Width="7" Height="7" Canvas.Left="-2.5" Canvas.Top="-8.5" Data="M-2.5,-8.5 L3.5,-8.5 0.5,-2.5 z"/>
+							<Rectangle Fill="#00FFFFFF" Width="8" Height="21" Canvas.Left="-3" Canvas.Top="-10"/>
+						</Canvas>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="true"/>
+							<Trigger Property="Foreground" Value="Blue"/>
+							<Trigger Property="IsDragging" Value="true"/>
+							<Trigger Property="IsEnabled" Value="false"/>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		
+		
+		<Style x:Key="SimpleSlider" TargetType="{x:Type Slider}">
+			<Setter Property="Stylus.IsPressAndHoldEnabled" Value="true"/>
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="Foreground" Value="#FFC4C4C4"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Slider}">
+						<Border SnapsToDevicePixels="true" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}"/>
+									<RowDefinition Height="Auto"/>
+								</Grid.RowDefinitions>
+								<TickBar x:Name="TopTick" Height="4" Visibility="Collapsed" Grid.Row="0" Fill="{TemplateBinding Foreground}" Placement="Top"/>
+								<TickBar x:Name="BottomTick" Height="4" Visibility="Collapsed" Grid.Row="2" Fill="{TemplateBinding Foreground}" Placement="Bottom"/>
+								<Border x:Name="TrackBackground" Margin="5,0" VerticalAlignment="center" Height="2" Grid.Row="1" Background="#FFA9A9A9" CornerRadius="1">
+									<Canvas Margin="-6,-1">
+										<Rectangle x:Name="PART_SelectionRange" Fill="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Stroke="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" StrokeThickness="1.0" Height="4.0" Visibility="Hidden"/>
+									</Canvas>
+								</Border>
+								<Track x:Name="PART_Track" Grid.Row="1">
+									<Track.DecreaseRepeatButton>
+										<RepeatButton Style="{StaticResource SliderRepeatButtonStyle}" Command="{x:Static Slider.DecreaseLarge}"/>
+									</Track.DecreaseRepeatButton>
+									<Track.IncreaseRepeatButton>
+										<RepeatButton Style="{StaticResource SliderRepeatButtonStyle}" Command="{x:Static Slider.IncreaseLarge}"/>
+									</Track.IncreaseRepeatButton>
+									<Track.Thumb>
+										<Thumb x:Name="Thumb" Style="{StaticResource HorizontalSliderThumbStyle}"/>
+									</Track.Thumb>
+								</Track>
+							</Grid>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<SolidColorBrush x:Key="CheckBoxFillNormal" Color="#F4F4F4"/>
+		<SolidColorBrush x:Key="CheckBoxStroke" Color="#8E8F8F"/>
+		
+
+		<Style x:Key="SimpleCheckbox" TargetType="{x:Type CheckBox}">
+			<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+			<Setter Property="Background" Value="{StaticResource CheckBoxFillNormal}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource CheckBoxStroke}"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type CheckBox}">
+						<Grid>
+							<Microsoft_Windows_Themes:BulletChrome HorizontalAlignment="Right" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" IsChecked="{TemplateBinding IsChecked}" RenderMouseOver="{TemplateBinding IsMouseOver}" RenderPressed="{TemplateBinding IsPressed}" VerticalAlignment="Center"/>
+							<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" RecognizesAccessKey="True" Margin="0,0,23,0"/>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="HasContent" Value="true">
+								<Setter Property="Padding" Value="4,0,0,0"/>
+							</Trigger>
+							<Trigger Property="IsEnabled" Value="false">
+								<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style x:Key="MagnifyButton" TargetType="{x:Type ToggleButton}">
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="Padding" Value="1"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ToggleButton}">
+						<Grid>
+							<Border x:Name="border" BorderThickness="1,1,1,1" Background="#004F4F4F" CornerRadius="2,2,2,2"/>
+							<Viewbox x:Name="viewbox" Stretch="Fill" d:LayoutOverrides="Width, Height" Margin="2,2,2,2">
+								<Canvas Width="26" Height="28" Background="#00000000">
+									<Rectangle Stroke="#FF1A1A1A" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="7" Height="13" RenderTransformOrigin="0.5,0.5" Canvas.Left="15.557" Canvas.Top="15">
+										<Rectangle.Fill>
+											<LinearGradientBrush EndPoint="1,0">
+												<GradientStop Color="#FF4B4B4B" Offset="0.017"/>
+												<GradientStop Color="#FF797979" Offset="1"/>
+											</LinearGradientBrush>
+										</Rectangle.Fill>
+										<Rectangle.RenderTransform>
+											<TransformGroup>
+												<ScaleTransform ScaleX="1" ScaleY="1"/>
+												<SkewTransform AngleX="0" AngleY="0"/>
+												<RotateTransform Angle="-36.407"/>
+												<TranslateTransform X="0" Y="0"/>
+											</TransformGroup>
+										</Rectangle.RenderTransform>
+									</Rectangle>
+									<Ellipse Fill="#FFB1B1B1" Stroke="#FF000000" HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="20"/>
+									<Ellipse x:Name="ellipse" Fill="#FF404040" Stroke="#FF000000" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="16" Height="16" Canvas.Left="2" Canvas.Top="2"/>
+									<Path Fill="#FF646464" Stretch="Fill" Margin="0,0,0,0" VerticalAlignment="Stretch" Height="3.916" RenderTransformOrigin="0.5,0.5" Data="M11.165963,3.407334 C11.165963,4.5119035 7.7614237,2 5,2 2.2385763,2 0.5430796,2.7359648 0.5430796,1.6313953 0.5430796,0.52682581 2.4229388,-0.22849379 5.1843626,-0.22849379 7.9457863,-0.22849379 11.165963,2.3027645 11.165963,3.407334 z" Width="10.623" Canvas.Left="3.345" Canvas.Top="4.523">
+										<Path.RenderTransform>
+											<TransformGroup>
+												<ScaleTransform ScaleX="1" ScaleY="1"/>
+												<SkewTransform AngleX="0" AngleY="0"/>
+												<RotateTransform Angle="-31.293"/>
+												<TranslateTransform X="-0.06713172318980476" Y="-0.15568762047436291"/>
+											</TransformGroup>
+										</Path.RenderTransform>
+									</Path>
+								</Canvas>
+							</Viewbox>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsKeyboardFocused" Value="true"/>
+							<Trigger Property="IsChecked" Value="true">
+								<Setter Property="Fill" TargetName="ellipse" Value="#FF294172"/>
+								<Setter Property="Margin" TargetName="viewbox" Value="2,2,2,2"/>
+								<Setter Property="Background" TargetName="border" Value="{DynamicResource MouseOverBackground}"/>
+							</Trigger>
+							<Trigger Property="IsMouseOver" Value="true">
+								<Setter Property="Fill" TargetName="ellipse" Value="#FF294172"/>
+								<Setter Property="Margin" TargetName="viewbox" Value="2,2,2,2"/>
+								<Setter Property="Background" TargetName="border" Value="{DynamicResource MouseOverBackground}"/>
+							</Trigger>
+							<Trigger Property="IsEnabled" Value="false">
+								<Setter Property="Foreground" Value="#ADADAD"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style x:Key="ButtonFocusVisual">
+			<Setter Property="Control.Template">
+				<Setter.Value>
+					<ControlTemplate>
+						<Rectangle Stroke="Black" StrokeDashArray="1 2" StrokeThickness="1" Margin="2" SnapsToDevicePixels="true"/>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<LinearGradientBrush x:Key="ButtonNormalBackground" EndPoint="0,1" StartPoint="0,0">
+			<GradientStop Color="#F3F3F3" Offset="0"/>
+			<GradientStop Color="#EBEBEB" Offset="0.5"/>
+			<GradientStop Color="#DDDDDD" Offset="0.5"/>
+			<GradientStop Color="#CDCDCD" Offset="1"/>
+		</LinearGradientBrush>
+		<SolidColorBrush x:Key="ButtonNormalBorder" Color="#FF707070"/>
+		<Style x:Key="CameraButton" TargetType="{x:Type Button}">
+			<Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+			<Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="Padding" Value="1"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Button}">
+						<Grid x:Name="grid1">
+							<Border x:Name="border" VerticalAlignment="Bottom" CornerRadius="3,3,3,3">
+								<Grid x:Name="grid" Margin="1,3,1,4" Height="18">
+									<Rectangle Margin="0,3,0,0">
+										<Rectangle.Fill>
+											<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+												<GradientStop Color="#FF373737" Offset="0.349"/>
+												<GradientStop Color="#FF2A2A2A" Offset="1"/>
+											</LinearGradientBrush>
+										</Rectangle.Fill>
+										<Rectangle.Stroke>
+											<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+												<GradientStop Color="#89515151" Offset="0"/>
+												<GradientStop Color="#FF212121" Offset="1"/>
+											</LinearGradientBrush>
+										</Rectangle.Stroke>
+									</Rectangle>
+									<Rectangle Fill="#FF454545" Margin="1,4,1,0" VerticalAlignment="Top" Height="3"/>
+									<Ellipse Fill="#FF313131" Stroke="#FF000000" Margin="2,5,10,2"/>
+									<Path Fill="#FF646464" Stretch="Fill" HorizontalAlignment="Left" Margin="3.461,6.962,0,8.788" VerticalAlignment="Stretch" Width="6.378" RenderTransformOrigin="0.5,0.5" Data="M6.354,1.862 C6.2537902,2.2700513 4.9673696,1.5490601 3.212761,1.5490601 1.4581523,1.5490601 0,2.8903542 0,1.862 0,0.8336458 1.4223913,0 3.177,0 4.9316087,0 6.5992572,0.86332023 6.354,1.862 z">
+										<Path.RenderTransform>
+											<TransformGroup>
+												<ScaleTransform ScaleX="1" ScaleY="1"/>
+												<SkewTransform AngleX="0" AngleY="0"/>
+												<RotateTransform Angle="-22.951"/>
+												<TranslateTransform X="-0.28833848666831496" Y="0.053662571794968361"/>
+											</TransformGroup>
+										</Path.RenderTransform>
+									</Path>
+									<Rectangle Fill="#FF525252" HorizontalAlignment="Right" Margin="0,0,3,0" VerticalAlignment="Top" Width="4" Height="3"/>
+									<Ellipse Fill="#FFC50000" HorizontalAlignment="Right" Margin="0,5,3,0" VerticalAlignment="Top" Width="3" Height="3"/>
+								</Grid>
+							</Border>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Background" TargetName="border" Value="{DynamicResource MouseOverBackground}"/>
+							</Trigger>
+							<Trigger Property="IsKeyboardFocused" Value="true"/>
+							<Trigger Property="ToggleButton.IsChecked" Value="true"/>
+							<Trigger Property="IsEnabled" Value="false">
+								<Setter Property="Foreground" Value="#ADADAD"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</Window.Resources>
+	
+	<Grid x:Name='LayoutRoot'>
+		<Grid x:Name='ContentRoot'/>
+			
+
+		<Grid HorizontalAlignment="Center" VerticalAlignment="Top" x:Name='Toolbar' Margin="0,4,0,0">
+			
+
+			<Border CornerRadius="3" BorderThickness="1">
+				<Border.BorderBrush>
+					<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+						<GradientStop Color="#92000000" Offset="0.918"/>
+						<GradientStop Color="#EF000000" Offset="0.996"/>
+					</LinearGradientBrush>
+				</Border.BorderBrush>
+				<Border.Background>
+					<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+						<GradientStop Color="#D0444444"/>
+						<GradientStop Color="#D3000000" Offset="1"/>
+					</LinearGradientBrush>
+				</Border.Background>
+			</Border>
+			<Grid HorizontalAlignment="Center" Margin="8,4,8,2" VerticalAlignment="Top">
+			
+
+				<StackPanel Orientation='Horizontal' Width="240" x:Name='Toggles' VerticalAlignment="Top">
+
+					<Button x:Name='Bounds' Style="{DynamicResource SimpleToggle}" Margin="0,0,4,0" Click='StartBounds' ToolTip="Find the bounds of a screen visual">
+						<Grid>
+							<Rectangle Stroke="{DynamicResource Redline}" Width="9" Height="9"/>
+							<Path Fill="{DynamicResource Redline}" Stretch="Fill" Stroke="{DynamicResource Redline}" VerticalAlignment="Top" Height="7" Data="M11.5,-0.5 L11.5,3.5 14.5,3.5 11.5,5.5 8.5,3.5 11.5,3.5 11.5,-0.5 z" StrokeLineJoin="Round" HorizontalAlignment="Center" Width="7"/>
+							<Path Fill="{DynamicResource Redline}" Stretch="Fill" Stroke="{DynamicResource Redline}" StrokeLineJoin="Round" HorizontalAlignment="Right" Width="7" Data="M17.5,11.5 L19.5,8.5 19.5,11.5 23.5,11.5 23.5,11.5 19.5,11.5 19.5,14.5 z" Height="7" VerticalAlignment="Center"/>
+							<Path Fill="{DynamicResource Redline}" Stretch="Fill" Stroke="{DynamicResource Redline}" StrokeLineJoin="Round" VerticalAlignment="Bottom" Height="7" Data="M11.5,6 L11.5,2 14.5,2 11.5,0 8.5,2 11.5,2.0001351 11.5,5.999981 z" Width="7" HorizontalAlignment="Center"/>
+							<Path Fill="{DynamicResource Redline}" Stretch="Fill" Stroke="{DynamicResource Redline}" StrokeLineJoin="Round" Margin="0,0,0,0" Data="M8,2.5 L12,2.5 12,-0.5 14,2.5 12,5.5 12,2.5 8,2.5 z" HorizontalAlignment="Left" Width="7" Height="7" VerticalAlignment="Center"/>
+						</Grid>
+					</Button>
+					<Button x:Name='Spacing' Style="{DynamicResource SimpleToggle}" Click='StartStretch' ToolTip="Find the spacing between two screen visuals">
+						<Grid>
+							<Path Fill="{DynamicResource Redline}" Stretch="Fill" Stroke="{DynamicResource Redline}" StrokeLineJoin="Round" HorizontalAlignment="Center" Width="7" Data="M11.5,-7 L11.5,3.5 14.5,3.5 11.5,5.5 8.5,3.5 11.5,3.5 11.5,-7 z" Margin="0,8.5,0,3"/>
+							<Path Fill="{DynamicResource Redline}" Stretch="Fill" Stroke="{DynamicResource Redline}" StrokeLineJoin="Round" HorizontalAlignment="Left" VerticalAlignment="Center" Width="17" Height="7" Data="M17.5,11.5 L19.5,8.5 19.5,11.5 23.5,11.5 33.5,11.5 19.5,11.5 19.5,14.5 z" Margin="3,3,3,3"/>
+							<Path Fill="{DynamicResource Redline}" Stretch="Fill" Stroke="{DynamicResource Redline}" StrokeLineJoin="Round" Data="M11.5,6 L11.5,2 14.5,2 11.5,0 8.5,2 11.5,2 11.5,6 z" HorizontalAlignment="Center" VerticalAlignment="Top" Width="7" Height="7" Margin="3,3,3,3"/>
+							<Path Fill="{DynamicResource Redline}" Stretch="Fill" Stroke="{DynamicResource Redline}" StrokeLineJoin="Round" Data="M8,2.5 L12,2.5 12,-0.5 14,2.5 12,5.5 12,2.5 8,2.5 z" HorizontalAlignment="Right" Margin="3,3,3,3" VerticalAlignment="Center" Width="7" Height="7"/>
+						</Grid>
+					</Button>
+					<Button Style="{DynamicResource SimpleToggle}" Click='StartStretchEW' ToolTip="Find the spacing between two screen visuals">
+						<Grid>
+							<Path Fill="{DynamicResource Redline}" Stretch="Fill" Stroke="{DynamicResource Redline}" StrokeLineJoin="Round" HorizontalAlignment="Left" VerticalAlignment="Center" Width="17" Height="7" Data="M17.5,11.5 L19.5,8.5 19.5,11.5 23.5,11.5 33.5,11.5 19.5,11.5 19.5,14.5 z" Margin="3,3,3,3"/>
+							<Path Fill="{DynamicResource Redline}" Stretch="Fill" Stroke="{DynamicResource Redline}" StrokeLineJoin="Round" Data="M8,2.5 L12,2.5 12,-0.5 14,2.5 12,5.5 12,2.5 8,2.5 z" HorizontalAlignment="Right" Margin="3,3,3,3" VerticalAlignment="Center" Width="7" Height="7"/>
+						</Grid>
+					</Button>
+					<Button Style="{DynamicResource SimpleToggle}" Click='StartStretchNS' ToolTip="Find the spacing between two screen visuals">
+						<Grid>
+							<Path Fill="{DynamicResource Redline}" Stretch="Fill" Stroke="{DynamicResource Redline}" StrokeLineJoin="Round" HorizontalAlignment="Center" Width="7" Data="M11.5,-7 L11.5,3.5 14.5,3.5 11.5,5.5 8.5,3.5 11.5,3.5 11.5,-7 z" Margin="0,8.5,0,3"/>
+							<Path Fill="{DynamicResource Redline}" Stretch="Fill" Stroke="{DynamicResource Redline}" StrokeLineJoin="Round" Data="M11.5,6 L11.5,2 14.5,2 11.5,0 8.5,2 11.5,2 11.5,6 z" HorizontalAlignment="Center" VerticalAlignment="Top" Width="7" Height="7" Margin="3,3,3,3"/>
+						</Grid>
+					</Button>
+					
+					<Button Click='StartCapture' ToolTip='Capture' x:Name='CaptureButton' Content='C' Width="25" Height="25" Style="{DynamicResource CameraButton}" Margin="0,0,5,0"/>
+
+					<!--<CheckBox x:Name='Bounds' Content='Bounds' Checked='StartBounds' Width='70' Foreground='White'/>
+					<CheckBox x:Name='Spacing' Content='Spacing' Checked='StartSpacing' Width='70' Foreground='White'/>-->
+					<ToggleButton x:Name='Magnify' ToolTip='Magnify' Checked='StartMagnify' Unchecked='StopMagnify' Width="25" Height="25" Style="{DynamicResource MagnifyButton}" />
+				</StackPanel>
+				<Button HorizontalAlignment="Right" Width="19" Height="19" Click='Close' Margin="0,2,0,0" VerticalAlignment="Top" Style="{DynamicResource CloseButton}"/>
+				<Expander x:Name="Preferences" HorizontalAlignment="Right" d:LayoutOverrides="Height" Margin="0,0,21,0" ToolTip="Preferences" VerticalAlignment="Top" Style="{DynamicResource PrefsExpander}" Foreground="#FFFFFFFF" d:IsLocked="True">
+					<Grid Width="218" Margin="0,6,0,0">
+						<StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<TextBlock VerticalAlignment="Top" Width="100" TextWrapping="Wrap" Text="Pixel tolerance" Foreground="DarkGray"/>
+								<Slider x:Name="ToleranceSlider" Style="{DynamicResource SimpleSlider}" Maximum="200" Width="131"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal" Visibility="Collapsed">
+								<CheckBox Content="Preserve annotations" Foreground="#FFFFFFFF" Style="{DynamicResource SimpleCheckbox}" IsChecked="{Binding PreserveAnnotations}"/>
+							</StackPanel>
+						</StackPanel>
+					</Grid>
+				</Expander>
+			</Grid>
+		</Grid>
+	</Grid>
+</Window>

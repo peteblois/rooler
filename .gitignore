@@ -1,0 +1,4 @@
+.DS_Store
+*.Designer.cs
+*.csproj.user
+*.pfx
