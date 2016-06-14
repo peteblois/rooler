@@ -22,8 +22,8 @@ namespace Rooler {
 
 			this.bounds = ScreenShot.FullScreenBounds;
 
-			int countX = (int)Math.Ceiling(this.bounds.Width / (double)tileWidth);
-			int countY = (int)Math.Ceiling(this.bounds.Height / (double)tileHeight);
+			var countX = (int)Math.Ceiling(this.bounds.Width / (double)tileWidth) + 1;
+			var countY = (int)Math.Ceiling(this.bounds.Height / (double)tileHeight) + 1;
 
 			this.screenShots = new ScreenShot[countX, countY];
 		}
