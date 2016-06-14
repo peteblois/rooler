@@ -25,7 +25,7 @@ namespace Rooler {
 			int countX = (int)Math.Ceiling(this.bounds.Width / (double)tileWidth);
 			int countY = (int)Math.Ceiling(this.bounds.Height / (double)tileHeight);
 
-			this.screenShots = new ScreenShot[tileWidth,tileHeight];
+			this.screenShots = new ScreenShot[countX, countY];
 		}
 
 		public int Left {
@@ -52,9 +52,9 @@ namespace Rooler {
 		}
 
 		public int GetLocalPixel(int x, int y) {
-			
+
 			int xIndex = x / this.tileWidth;
-			int yIndex = y / this.tileHeight + this.bounds.Top;
+			int yIndex = y / this.tileHeight;
 
 			ScreenShot ss = this.screenShots[xIndex, yIndex];
 			if (ss == null) {
