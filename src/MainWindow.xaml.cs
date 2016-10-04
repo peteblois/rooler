@@ -23,11 +23,6 @@ namespace Rooler {
 
 			this.InitializeComponent();
 
-			System.Windows.IDataObject data = System.Windows.Clipboard.GetDataObject();
-
-			string [] formats = data.GetFormats();
-
-
 #if !DEBUG
 			// Makes it a royal pain to debug...
 			this.Topmost = true;
