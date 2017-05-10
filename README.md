@@ -3,7 +3,7 @@ Utilities for pixel-perfect analysis and measurement of graphics. Created for de
 
 ## Download
 
-This project, for now, only works with Windows. Check out the binaries [here](https://github.com/ErichDonGubler/rooler/releases).
+This project, for now, only works with Windows. Check out the binaries [here](https://github.com/peteblois/rooler/releases).
 
 You will need the latest .NET framework installed on your machine.
 
