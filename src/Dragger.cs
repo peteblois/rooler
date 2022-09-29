@@ -25,8 +25,8 @@ namespace Rooler
 				var currentScreen = Screen.FromPoint(System.Windows.Forms.Cursor.Position);
 				var fullScreen = ScreenShot.FullScreenBounds;
 
-				var xOffset = currentScreen.Bounds.Left + currentScreen.Bounds.Width / 2.0;
-				var yOffset = (double)currentScreen.Bounds.Top;
+				var xOffset = Math.Abs(fullScreen.Left) + Math.Abs(currentScreen.Bounds.Left) + currentScreen.Bounds.Width / 2.0;
+				var yOffset = (double)Math.Abs(fullScreen.Top) + Math.Abs(currentScreen.Bounds.Top);
 
 				// Transform the WinForms pixels (system dpi) to WPF pixels (based on virtual 96dpi)
 				xOffset = xOffset / ScreenShot.XRatio;
