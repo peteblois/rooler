@@ -658,7 +658,7 @@
 		<Grid x:Name='ContentRoot'/>
 
 
-		<Grid HorizontalAlignment="Center" VerticalAlignment="Top" x:Name='Toolbar' Margin="0,4,0,0">
+		<Grid HorizontalAlignment="Left" VerticalAlignment="Top" x:Name='Toolbar' Margin="0,4,0,0">
 
 
 			<Border CornerRadius="3" BorderThickness="1">

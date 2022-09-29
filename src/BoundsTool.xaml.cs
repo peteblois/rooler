@@ -2,8 +2,6 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Diagnostics;
 
 namespace Rooler {
 	/// <summary>
@@ -27,7 +25,7 @@ namespace Rooler {
 
 			this.Dimensions.CloseClicked += delegate {
 				this.CloseService();
-			};		
+			};
 		}
 
 		protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e) {
@@ -86,7 +84,7 @@ namespace Rooler {
 
 		private bool IsGrayed {
 			get {
-				return ((SolidColorBrush)this.Resources["MaskBackground"]).Color.A != 0; 
+				return ((SolidColorBrush)this.Resources["MaskBackground"]).Color.A != 0;
 			}
 			set {
 				Color currentColor = ((SolidColorBrush)this.Resources["MaskBackground"]).Color;
@@ -110,8 +108,7 @@ namespace Rooler {
 				this.BoundsWidth.Width = new GridLength(this.bounds.Width, GridUnitType.Pixel);
 				this.BoundsHeight.Height = new GridLength(this.bounds.Height, GridUnitType.Pixel);
 
-				this.Dimensions.Visibility = Visibility.Visible;
-				this.Dimensions.Text = string.Format(@"{0} x {1}", this.screenBounds.Width, this.screenBounds.Height);
+				this.DisplayScreenBounds();
 			}
 		}
 
@@ -127,14 +124,30 @@ namespace Rooler {
 			this.BoundsWidth.AnimateTo(this.bounds.Width, duration);
 			this.BoundsHeight.AnimateTo(this.bounds.Height, duration);
 
-			this.Dimensions.Visibility = Visibility.Visible;
-			this.Dimensions.Text = string.Format(@"{0} x {1}", this.screenBounds.Width, this.screenBounds.Height);
+			this.DisplayScreenBounds();
 		}
 
+		private void DisplayScreenBounds()
+		{
+			var widthWpf = this.bounds.Width;
+			var heightWpf = this.bounds.Height;
+			var widthNative = this.screenBounds.Width;
+			var heightNative = this.screenBounds.Height;
 
+			this.Dimensions.Visibility = Visibility.Visible;
+
+			if (!ScreenShot.HasDisplayScaling)
+			{
+				this.Dimensions.Text = $@"{(int) widthNative} x {(int) heightNative}";
+			}
+			else
+			{
+				this.Dimensions.Text = $@"{(int) widthWpf} x {(int) heightWpf} ({widthNative} x {heightNative})";
+			}
+		}
 
 		protected override void  OnLostMouseCapture(MouseEventArgs e) {
- 			base.OnLostMouseCapture(e);
+			base.OnLostMouseCapture(e);
 
 			if (this.bounds.Width == 0 || this.bounds.Height == 0) {
 				this.CloseService();
@@ -150,20 +163,11 @@ namespace Rooler {
 			startRect.Height -= 1;
 			IntRect screenBounds = ScreenCoordinates.Collapse(startRect, this.screenshot);
 
-
 			if (!screenBounds.IsEmpty)
 				this.AnimateBounds(screenBounds);
 
 			this.BoundsRect.Visibility = Visibility.Visible;
 			this.Dimensions.CanClose = true;
-
-			//BitmapFrame frame = BitmapFrame.Create(this.screenshot.Image);
-			//PngBitmapEncoder encoder = new PngBitmapEncoder();
-			//encoder.Frames.Add(frame);
-
-			//using (FileStream fs = new FileStream(@"C:\tmp\ss.png", FileMode.Create, FileAccess.Write)) {
-			//    encoder.Save(fs);
-			//};
 		}
 	}
 }

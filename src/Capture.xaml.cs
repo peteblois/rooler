@@ -103,14 +103,13 @@ namespace Rooler {
 			set {
 				this.bounds = value;
 
-				this.BoundsOffsetX.Width = new GridLength(this.bounds.Left, GridUnitType.Pixel);
-				this.BoundsOffsetY.Height = new GridLength(this.bounds.Top, GridUnitType.Pixel);
+				this.BoundsOffsetX.Width = new GridLength(this.Bounds.Left, GridUnitType.Pixel);
+				this.BoundsOffsetY.Height = new GridLength(this.Bounds.Top, GridUnitType.Pixel);
 
-				this.BoundsWidth.Width = new GridLength(this.bounds.Width, GridUnitType.Pixel);
-				this.BoundsHeight.Height = new GridLength(this.bounds.Height, GridUnitType.Pixel);
+				this.BoundsWidth.Width = new GridLength(this.Bounds.Width, GridUnitType.Pixel);
+				this.BoundsHeight.Height = new GridLength(this.Bounds.Height, GridUnitType.Pixel);
 
-				this.Dimensions.Visibility = Visibility.Visible;
-				this.Dimensions.Text = string.Format(@"{0} x {1}", this.bounds.Width, this.bounds.Height);
+				this.DisplayBounds();
 			}
 		}
 
@@ -125,8 +124,25 @@ namespace Rooler {
 			this.BoundsWidth.AnimateTo(this.bounds.Width, duration);
 			this.BoundsHeight.AnimateTo(this.bounds.Height, duration);
 
+			this.DisplayBounds();
+		}
+
+		private void DisplayBounds()
+		{
+			var widthWpf = this.Bounds.Width;
+			var heightWpf = this.Bounds.Height;
+			var widthNative = widthWpf * ScreenShot.XRatio;
+			var heightNative = heightWpf * ScreenShot.YRatio;
+
 			this.Dimensions.Visibility = Visibility.Visible;
-			this.Dimensions.Text = string.Format(@"{0} x {1}", this.bounds.Width, this.bounds.Height);
+			if (!ScreenShot.HasDisplayScaling)
+			{
+				this.Dimensions.Text = $@"{(int) widthNative} x {(int) heightNative}";
+			}
+			else
+			{
+				this.Dimensions.Text = $@"{(int) widthWpf} x {(int) heightWpf} ({(int) widthNative} x {(int) heightNative})";
+			}
 		}
 
 		protected override void OnLostMouseCapture(MouseEventArgs e) {
