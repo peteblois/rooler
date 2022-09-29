@@ -16,6 +16,18 @@ namespace Rooler
 
 		private DateTime lastCapture = DateTime.Today;
 		private IntPoint lastMousePoint = new IntPoint();
+
+		/// <summary>
+		/// The base point for calculating the X/Y offset.
+		/// </summary>
+		/// <remarks>
+		/// This is scaled to WPF pixels.
+		/// </remarks>
+		private IntPoint basePointWpf = new IntPoint();
+
+		/// <summary>
+		/// The base point for calculating the X/Y offset.
+		/// </summary>
 		private IntPoint basePoint = new IntPoint();
 
 		public Magnifier(IScreenServiceHost host) : base(host)
@@ -60,6 +72,7 @@ namespace Rooler
 		private void SetBasePointExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
 			this.basePoint = NativeMethods.GetCursorPos();
+			this.basePointWpf = new IntPoint((int)(this.basePoint.X / ScreenShot.XRatio), (int)(this.basePoint.Y / ScreenShot.YRatio));
 		}
 
 		public double Scale { get; set; }
@@ -78,47 +91,67 @@ namespace Rooler
 
 		private void HandleTick(object sender, EventArgs e)
 		{
-			IntPoint mousePoint = NativeMethods.GetCursorPos();
+			IntPoint mousePointNative = NativeMethods.GetCursorPos();
 
-			if (mousePoint == this.lastMousePoint && DateTime.Now - this.lastCapture < TimeSpan.FromSeconds(.2))
+			if (mousePointNative == this.lastMousePoint && DateTime.Now - this.lastCapture < TimeSpan.FromSeconds(.2))
 			{
 				return;
 			}
 
 			this.lastCapture = DateTime.Now;
-			this.lastMousePoint = mousePoint;
+			this.lastMousePoint = mousePointNative;
 
-			this.MouseX.Text = string.Format(@"X: {0}", mousePoint.X - this.basePoint.X);
-			this.MouseY.Text = string.Format(@"Y: {0}", mousePoint.Y - this.basePoint.Y);
+			var mousePointWpf = new IntPoint((int)(mousePointNative.X / ScreenShot.XRatio), (int)(mousePointNative.Y / ScreenShot.YRatio));
+
+			var xPosWpf = mousePointWpf.X - this.basePointWpf.X;
+			var yPosWpf = mousePointWpf.Y - this.basePointWpf.Y;
+			var xPosNative = mousePointNative.X - this.basePoint.X;
+			var yPosNative = mousePointNative.Y - this.basePoint.Y;
+
+			if (!ScreenShot.HasDisplayScaling)
+			{
+				this.MouseX.Text = $@"X: {xPosNative}";
+				this.MouseY.Text = $@"Y: {yPosNative}";
+			}
+			else
+			{
+
+				this.MouseX.Text = $@"X: {xPosWpf} ({xPosNative})";
+				this.MouseY.Text = $@"Y: {yPosWpf} ({yPosNative})";
+			}
 
 			if (this.isPaused)
 				return;
 
 
-			double width = this.Image.ActualWidth / this.Scale;
-			double height = this.Image.ActualHeight / this.Scale;
+			double widthWpf = this.Image.ActualWidth / this.Scale;
+			double heightWpf = this.Image.ActualHeight / this.Scale;
+			double widthNative = this.Image.ActualWidth * ScreenShot.XRatio / this.Scale;
+			double heightNative = this.Image.ActualHeight * ScreenShot.YRatio/ this.Scale;
 
 
-			double left = (mousePoint.X - width / 2).Clamp(ScreenShot.FullScreenBounds.Left, ScreenShot.FullScreenBounds.Width - width);
-			double top = (mousePoint.Y - height / 2).Clamp(ScreenShot.FullScreenBounds.Top, ScreenShot.FullScreenBounds.Height - height);
+			double leftWpf = (mousePointWpf.X - widthWpf / 2).Clamp(ScreenShot.FullScreenBoundsWpf.Left, ScreenShot.FullScreenBoundsWpf.Width - widthWpf);
+			double topWpf = (mousePointWpf.Y - heightWpf / 2).Clamp(ScreenShot.FullScreenBoundsWpf.Top, ScreenShot.FullScreenBoundsWpf.Height - heightWpf);
+			double leftNative = (mousePointNative.X - widthNative / 2).Clamp(ScreenShot.FullScreenBounds.Left, ScreenShot.FullScreenBounds.Width - widthNative);
+			double topNative = (mousePointNative.Y - heightNative / 2).Clamp(ScreenShot.FullScreenBounds.Top, ScreenShot.FullScreenBounds.Height - heightNative);
 
 
-			double deltaX = left - (mousePoint.X - width / 2);
-			double deltaY = top - (mousePoint.Y - height / 2);
+			double deltaXWpf = leftWpf - (mousePointWpf.X - widthWpf / 2);
+			double deltaYWpf = topWpf - (mousePointWpf.Y - heightWpf / 2);
 
-			if (deltaX != 0)
-				this.CenterX.Width = new GridLength((this.Image.ActualWidth / 2 - deltaX * this.Scale) + 2 * this.Scale);
+			if (deltaXWpf != 0)
+				this.CenterX.Width = new GridLength((this.Image.ActualWidth / 2 - deltaXWpf * this.Scale) + 2 * this.Scale);
 			else
 				this.CenterX.Width = new GridLength(this.Image.ActualWidth / 2 + 8);
 
-			if (deltaY != 0)
-				this.CenterY.Height = new GridLength((this.Image.ActualHeight / 2 - deltaY * this.Scale) + 2 * this.Scale);
+			if (deltaYWpf != 0)
+				this.CenterY.Height = new GridLength((this.Image.ActualHeight / 2 - deltaYWpf * this.Scale) + 2 * this.Scale);
 			else
 				this.CenterY.Height = new GridLength(this.Image.ActualHeight / 2 + 8);
 
 
 
-			IntRect rect = new IntRect((int)left, (int)top, (int)width, (int)height);
+			IntRect rect = new IntRect((int)leftNative, (int)topNative, (int)widthNative, (int)heightNative);
 
 			ScreenShot screenShot = new ScreenShot(rect);
 
@@ -130,10 +163,10 @@ namespace Rooler
 
 			this.Image.Source = newFormatedBitmapSource;
 
-			if (width == 0 || height == 0)
+			if (widthWpf == 0 || heightWpf == 0)
 				return;
 
-			uint centerPixel = (uint)screenShot.GetScreenPixel((int)mousePoint.X, (int)mousePoint.Y);
+			uint centerPixel = (uint)screenShot.GetScreenPixel((int)mousePointNative.X, (int)mousePointNative.Y);
 			centerPixel = centerPixel | 0xFF000000;
 			byte r = (byte)((centerPixel >> 16) & 0xFF);
 			byte g = (byte)((centerPixel >> 8) & 0xFF);
@@ -142,7 +175,7 @@ namespace Rooler
 			Brush brush = new SolidColorBrush(Color.FromRgb(r, g, b));
 			this.ColorSwatch.Fill = brush;
 
-			this.PixelColor.Text = string.Format(@"#{0:X8}", centerPixel);
+			this.PixelColor.Text = $@"#{centerPixel:X8}";
 		}
 	}
 }

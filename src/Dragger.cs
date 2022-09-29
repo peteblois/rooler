@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -19,29 +20,17 @@ namespace Rooler
 
 			this.target.Loaded += (sender, args) =>
 			{
-				// Calculate the offset:
-				// With multiple displays, depending their relative positioning,
-				// simply centering the target at the top may be outside the visual area.
+				// Calculate the initial offset:
+				// in the top center of the current screen
 				var currentScreen = Screen.FromPoint(System.Windows.Forms.Cursor.Position);
 				var fullScreen = ScreenShot.FullScreenBounds;
 
-				var centerOfAllScreensX = fullScreen.Width/2.0;
-				var centerOfAllScreensY = (double)fullScreen.Top;
+				var xOffset = currentScreen.Bounds.Left + currentScreen.Bounds.Width / 2.0;
+				var yOffset = (double)currentScreen.Bounds.Top;
 
-				var centerOfCurrentScreenX = currentScreen.Bounds.Left + currentScreen.Bounds.Width/2;
-				var centerOfCurrentScreenY = currentScreen.Bounds.Top;
-
-				// Calculate the offset (difference between the top-center of all screens and that of the current screen.
-				var xOffset = centerOfCurrentScreenX - centerOfAllScreensX;
-				var yOffset = centerOfCurrentScreenY - centerOfAllScreensY;
-
-				// Transform the WinForms pixels (system dpi) to WPF pixels (based on virtual 96dpi).
-				var source = PresentationSource.FromVisual(target);
-				if (source?.CompositionTarget != null)
-				{
-					xOffset = xOffset / source.CompositionTarget.TransformToDevice.M11;
-					yOffset = yOffset / source.CompositionTarget.TransformToDevice.M22;
-				}
+				// Transform the WinForms pixels (system dpi) to WPF pixels (based on virtual 96dpi)
+				xOffset = xOffset / ScreenShot.XRatio;
+				yOffset = yOffset / ScreenShot.YRatio;
 
 				this.offset.X = xOffset;
 				this.offset.Y = yOffset;

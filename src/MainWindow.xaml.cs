@@ -44,7 +44,8 @@ namespace Rooler
 
 			this.DataContext = this;
 
-			IntRect screenBounds = ScreenShot.FullScreenBounds;
+			var screenBounds = ScreenShot.FullScreenBoundsWpf;
+
 			this.Top = screenBounds.Top;
 			this.Left = screenBounds.Left;
 			this.Width = screenBounds.Width;

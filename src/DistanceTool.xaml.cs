@@ -131,12 +131,45 @@ namespace Rooler
 			this.CenterY.Height = new GridLength(Math.Max(screenPoint.Y - bounds.Y, 0));
 			this.CenterX.Width = new GridLength(Math.Max(screenPoint.X - bounds.X, 0));
 
+
+			var widthWpf = bounds.Width;
+			var heightWpf = bounds.Height;
+			var widthNative = screenBounds.Width;
+			var heightNative = screenBounds.Height;
+
 			if (this.StretchMode == StretchMode.EastWest)
-				this.Dimensions.Text = string.Format(@"{0}", screenBounds.Width);
+			{
+				if (!ScreenShot.HasDisplayScaling)
+				{
+					this.Dimensions.Text = $@"{(int)widthNative}";
+				}
+				else
+				{
+					this.Dimensions.Text = $@"{(int)widthWpf} ({(int)widthNative})";
+				}
+			}
 			else if (this.StretchMode == StretchMode.NorthSouth)
-				this.Dimensions.Text = string.Format(@"{0}", screenBounds.Height);
+			{
+				if (!ScreenShot.HasDisplayScaling)
+				{
+					this.Dimensions.Text = $@"{(int)heightNative}";
+				}
+				else
+				{
+					this.Dimensions.Text = $@"{(int)heightWpf} ({(int)heightNative})";
+				}
+			}
 			else
-				this.Dimensions.Text = string.Format(@"{0} x {1}", screenBounds.Width, screenBounds.Height);
+			{
+				if (!ScreenShot.HasDisplayScaling)
+				{
+					this.Dimensions.Text = $@"{(int)widthNative} x {(int)heightNative}";
+				}
+				else
+				{
+					this.Dimensions.Text = $@"{(int)widthWpf} x {(int)heightWpf} ({(int)widthNative} x {(int)heightNative})";
+				}
+			}
 		}
 	}
 }

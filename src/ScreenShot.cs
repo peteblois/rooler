@@ -98,6 +98,26 @@ namespace Rooler
 			}
 		}
 
+		/// <summary>
+		/// Gets the bounds of across all screens, in WPF pixels.
+		/// These consider the display scaling of the primary screen.
+		/// </summary>
+		public static IntRect FullScreenBoundsWpf
+		{
+			get
+			{
+				var unscaled = FullScreenBounds;
+				return new IntRect((int)(unscaled.Left / XRatio), (int)(unscaled.Top / YRatio), (int)(unscaled.Width / XRatio),
+					(int)(unscaled.Height / YRatio));
+
+			}
+		}
+
+		public static double XRatio = Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
+		public static double YRatio = Screen.PrimaryScreen.Bounds.Height / SystemParameters.PrimaryScreenHeight;
+
+		public static bool HasDisplayScaling = XRatio != 1 || YRatio != 1;
+
 		private void Init(BitmapSource bitmap)
 		{
 			this.bitmap = bitmap;

@@ -108,8 +108,7 @@ namespace Rooler {
 				this.BoundsWidth.Width = new GridLength(this.bounds.Width, GridUnitType.Pixel);
 				this.BoundsHeight.Height = new GridLength(this.bounds.Height, GridUnitType.Pixel);
 
-				this.Dimensions.Visibility = Visibility.Visible;
-				this.Dimensions.Text = string.Format(@"{0} x {1}", this.screenBounds.Width, this.screenBounds.Height);
+				this.DisplayScreenBounds();
 			}
 		}
 
@@ -125,11 +124,27 @@ namespace Rooler {
 			this.BoundsWidth.AnimateTo(this.bounds.Width, duration);
 			this.BoundsHeight.AnimateTo(this.bounds.Height, duration);
 
-			this.Dimensions.Visibility = Visibility.Visible;
-			this.Dimensions.Text = string.Format(@"{0} x {1}", this.screenBounds.Width, this.screenBounds.Height);
+			this.DisplayScreenBounds();
 		}
 
+		private void DisplayScreenBounds()
+		{
+			var widthWpf = this.bounds.Width;
+			var heightWpf = this.bounds.Height;
+			var widthNative = this.screenBounds.Width;
+			var heightNative = this.screenBounds.Height;
 
+			this.Dimensions.Visibility = Visibility.Visible;
+
+			if (!ScreenShot.HasDisplayScaling)
+			{
+				this.Dimensions.Text = $@"{(int) widthNative} x {(int) heightNative}";
+			}
+			else
+			{
+				this.Dimensions.Text = $@"{(int) widthWpf} x {(int) heightWpf} ({widthNative} x {heightNative})";
+			}
+		}
 
 		protected override void  OnLostMouseCapture(MouseEventArgs e) {
 			base.OnLostMouseCapture(e);
