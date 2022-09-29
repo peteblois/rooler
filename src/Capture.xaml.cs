@@ -103,11 +103,11 @@ namespace Rooler {
 			set {
 				this.bounds = value;
 
-				this.BoundsOffsetX.Width = new GridLength(this.bounds.Left, GridUnitType.Pixel);
-				this.BoundsOffsetY.Height = new GridLength(this.bounds.Top, GridUnitType.Pixel);
+				this.BoundsOffsetX.Width = new GridLength(this.Bounds.Left, GridUnitType.Pixel);
+				this.BoundsOffsetY.Height = new GridLength(this.Bounds.Top, GridUnitType.Pixel);
 
-				this.BoundsWidth.Width = new GridLength(this.bounds.Width, GridUnitType.Pixel);
-				this.BoundsHeight.Height = new GridLength(this.bounds.Height, GridUnitType.Pixel);
+				this.BoundsWidth.Width = new GridLength(this.Bounds.Width, GridUnitType.Pixel);
+				this.BoundsHeight.Height = new GridLength(this.Bounds.Height, GridUnitType.Pixel);
 
 				this.Dimensions.Visibility = Visibility.Visible;
 				this.Dimensions.Text = string.Format(@"{0} x {1}", this.bounds.Width, this.bounds.Height);

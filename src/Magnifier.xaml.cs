@@ -5,10 +5,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
-namespace Rooler {
-	
-	public partial class Magnifier : Tool {
-
+namespace Rooler
+{
+	public partial class Magnifier : Tool
+	{
 		private bool isPaused = false;
 
 		public static RoutedCommand CopyCommand = new RoutedCommand("Copy", typeof(Magnifier));
@@ -18,9 +18,8 @@ namespace Rooler {
 		private IntPoint lastMousePoint = new IntPoint();
 		private IntPoint basePoint = new IntPoint();
 
-		
-
-		public Magnifier(IScreenServiceHost host): base(host) {
+		public Magnifier(IScreenServiceHost host) : base(host)
+		{
 			this.InitializeComponent();
 
 			new Dragger(this);
@@ -29,13 +28,15 @@ namespace Rooler {
 
 			this.Scale = 8;
 
-			DispatcherTimer timer = new DispatcherTimer() {
+			DispatcherTimer timer = new DispatcherTimer()
+			{
 				Interval = TimeSpan.FromSeconds(.03),
 				IsEnabled = true,
 			};
 			timer.Tick += this.HandleTick;
 
-			this.Loaded += delegate {
+			this.Loaded += delegate
+			{
 				this.Focus();
 			};
 
@@ -45,23 +46,26 @@ namespace Rooler {
 			this.InputBindings.Add(new InputBinding(Magnifier.SetBasePointCommand, new KeyGesture(Key.Enter)));
 			this.CommandBindings.Add(new CommandBinding(Magnifier.SetBasePointCommand, this.SetBasePointExecuted));
 		}
-		
-		private void CloseMagnifier(object sender, EventArgs e) {
+
+		private void CloseMagnifier(object sender, EventArgs e)
+		{
 			this.CloseService();
 		}
 
-
-		private void CopyCommandExecuted(object sender, ExecutedRoutedEventArgs e) {
+		private void CopyCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
 			Clipboard.SetText(this.PixelColor.Text);
 		}
 
-		private void SetBasePointExecuted(object sender, ExecutedRoutedEventArgs e) {
+		private void SetBasePointExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
 			this.basePoint = NativeMethods.GetCursorPos();
 		}
 
 		public double Scale { get; set; }
 
-		protected override void OnMouseWheel(MouseWheelEventArgs e) {
+		protected override void OnMouseWheel(MouseWheelEventArgs e)
+		{
 
 			if (e.Delta > 0)
 				this.Scale += 1;
@@ -72,11 +76,12 @@ namespace Rooler {
 			base.OnMouseWheel(e);
 		}
 
-		private void HandleTick(object sender, EventArgs e) {
-
+		private void HandleTick(object sender, EventArgs e)
+		{
 			IntPoint mousePoint = NativeMethods.GetCursorPos();
 
-			if (mousePoint == this.lastMousePoint && DateTime.Now - this.lastCapture < TimeSpan.FromSeconds(.2)) {
+			if (mousePoint == this.lastMousePoint && DateTime.Now - this.lastCapture < TimeSpan.FromSeconds(.2))
+			{
 				return;
 			}
 
@@ -93,7 +98,6 @@ namespace Rooler {
 			double width = this.Image.ActualWidth / this.Scale;
 			double height = this.Image.ActualHeight / this.Scale;
 
-			
 
 			double left = (mousePoint.X - width / 2).Clamp(ScreenShot.FullScreenBounds.Left, ScreenShot.FullScreenBounds.Width - width);
 			double top = (mousePoint.Y - height / 2).Clamp(ScreenShot.FullScreenBounds.Top, ScreenShot.FullScreenBounds.Height - height);
@@ -112,7 +116,7 @@ namespace Rooler {
 			else
 				this.CenterY.Height = new GridLength(this.Image.ActualHeight / 2 + 8);
 
-			
+
 
 			IntRect rect = new IntRect((int)left, (int)top, (int)width, (int)height);
 
@@ -139,18 +143,6 @@ namespace Rooler {
 			this.ColorSwatch.Fill = brush;
 
 			this.PixelColor.Text = string.Format(@"#{0:X8}", centerPixel);
-		}
-
-		protected override void OnMouseEnter(MouseEventArgs e) {
-			base.OnMouseEnter(e);
-
-			//this.isPaused = true;
-		}
-
-		protected override void OnMouseLeave(MouseEventArgs e) {
-			base.OnMouseLeave(e);
-
-			//this.isPaused = false;
 		}
 	}
 }

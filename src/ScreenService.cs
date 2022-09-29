@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Windows;
 
-namespace Rooler {
-	public interface IScreenService {
-
+namespace Rooler
+{
+	public interface IScreenService
+	{
 		FrameworkElement Visual { get; }
 
 		void CloseService();
@@ -14,7 +15,8 @@ namespace Rooler {
 		bool IsFrozen { get; }
 	}
 
-	public interface IScreenServiceHost {
+	public interface IScreenServiceHost
+	{
 		bool PreserveAnnotations { get; }
 		IScreenShot CurrentScreen { get; }
 	}

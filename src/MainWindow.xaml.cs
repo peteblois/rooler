@@ -6,11 +6,13 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls.Primitives;
 
-namespace Rooler {
+namespace Rooler
+{
 	/// <summary>
 	/// Interaction logic for Window1.xaml
 	/// </summary>
-	public partial class MainWindow : Window, INotifyPropertyChanged, IScreenServiceHost {
+	public partial class MainWindow : Window, INotifyPropertyChanged, IScreenServiceHost
+	{
 
 
 		private IScreenService currentService = null;
@@ -19,7 +21,8 @@ namespace Rooler {
 
 		private Magnifier magnifier;
 
-		public MainWindow() {
+		public MainWindow()
+		{
 
 			this.InitializeComponent();
 
@@ -34,7 +37,8 @@ namespace Rooler {
 
 			this.ToleranceSlider.Value = ScreenCoordinates.ColorTolerance;
 
-			this.ToleranceSlider.ValueChanged += delegate {
+			this.ToleranceSlider.ValueChanged += delegate
+			{
 				ScreenCoordinates.ColorTolerance = this.ToleranceSlider.Value;
 			};
 
@@ -48,15 +52,18 @@ namespace Rooler {
 		}
 
 		private bool preserveAnnotations;
-		public bool PreserveAnnotations {
+		public bool PreserveAnnotations
+		{
 			get { return this.preserveAnnotations; }
-			set {
+			set
+			{
 				this.preserveAnnotations = value;
 				this.OnPropertyChanged("PreserveAnnotations");
 			}
 		}
 
-		protected override void OnDeactivated(EventArgs e) {
+		protected override void OnDeactivated(EventArgs e)
+		{
 
 			this.CurrentService = null;
 
@@ -64,25 +71,30 @@ namespace Rooler {
 			base.OnDeactivated(e);
 		}
 
-		private void StartBounds(object sender, EventArgs e) {
+		private void StartBounds(object sender, EventArgs e)
+		{
 			this.CurrentService = new BoundsTool(this);
 		}
 
-		private void StartStretch(object sender, EventArgs e) {
+		private void StartStretch(object sender, EventArgs e)
+		{
 			this.CurrentService = new DistanceTool(StretchMode.NorthSouthEastWest, this);
 		}
 
-		private void StartStretchNS(object sender, EventArgs e) {
+		private void StartStretchNS(object sender, EventArgs e)
+		{
 			this.CurrentService = new DistanceTool(StretchMode.NorthSouth, this);
 		}
 
-		private void StartStretchEW(object sender, EventArgs e) {
+		private void StartStretchEW(object sender, EventArgs e)
+		{
 			this.CurrentService = new DistanceTool(StretchMode.EastWest, this);
 		}
 
-		private void StartMagnify(object sender, EventArgs e) {
-
-			if (this.magnifier != null) {
+		private void StartMagnify(object sender, EventArgs e)
+		{
+			if (this.magnifier != null)
+			{
 				this.magnifier.CloseService();
 				this.magnifier = null;
 			}
@@ -90,7 +102,8 @@ namespace Rooler {
 			this.magnifier = new Magnifier(this);
 			this.ContentRoot.Children.Add(this.magnifier.Visual);
 
-			this.magnifier.ServiceClosed += delegate {
+			this.magnifier.ServiceClosed += delegate
+			{
 				this.Magnify.IsChecked = false;
 				if (this.magnifier != null)
 					this.ContentRoot.Children.Remove(this.magnifier.Visual);
@@ -98,20 +111,26 @@ namespace Rooler {
 			};
 		}
 
-		private void StopMagnify(object sender, EventArgs e) {
+		private void StopMagnify(object sender, EventArgs e)
+		{
 			if (this.magnifier != null)
 				this.magnifier.CloseService();
 		}
 
-		private void StartCapture(object sender, EventArgs e) {
+		private void StartCapture(object sender, EventArgs e)
+		{
 			this.CurrentService = new Capture(this);
 		}
 
-		public IScreenService CurrentService {
+		public IScreenService CurrentService
+		{
 			get { return this.currentService; }
-			set {
-				if (this.currentService != null) {
-					if (!this.PreserveAnnotations && !this.currentService.IsFrozen) {
+			set
+			{
+				if (this.currentService != null)
+				{
+					if (!this.PreserveAnnotations && !this.currentService.IsFrozen)
+					{
 						this.currentService.CloseService();
 						Debug.Assert(this.currentService == null);
 					}
@@ -119,7 +138,8 @@ namespace Rooler {
 
 				this.currentService = value;
 
-				if (this.currentService != null) {
+				if (this.currentService != null)
+				{
 					this.currentServices.Add(this.currentService);
 					this.ContentRoot.Children.Add(this.currentService.Visual);
 					this.currentService.ServiceClosed += this.ServiceClosed;
@@ -128,17 +148,20 @@ namespace Rooler {
 		}
 
 		private IScreenShot lastScreenshot;
-		public IScreenShot CurrentScreen {
-			get {
-				if (this.currentServices.Count == 0) {
+		public IScreenShot CurrentScreen
+		{
+			get
+			{
+				if (this.currentServices.Count == 0)
+				{
 					this.lastScreenshot = new VirtualizedScreenShot();
-					//this.lastScreenshot = new ScreenShot();
 				}
 				return this.lastScreenshot;
 			}
 		}
 
-		private void ServiceClosed(object sender, EventArgs e) {
+		private void ServiceClosed(object sender, EventArgs e)
+		{
 
 			IScreenService service = (IScreenService)sender;
 
@@ -151,34 +174,41 @@ namespace Rooler {
 			if (service == this.currentService)
 				this.currentService = null;
 
-			foreach (UIElement child in this.Toggles.Children) {
+			foreach (UIElement child in this.Toggles.Children)
+			{
 				ToggleButton tb = child as ToggleButton;
 				if (tb != null)
 					tb.IsChecked = false;
 			}
 		}
 
-		private void Close(object sender, EventArgs e) {
+		private void Close(object sender, EventArgs e)
+		{
 			this.Close();
 		}
 
-		protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e) {
+		protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+		{
 			base.OnMouseLeftButtonDown(e);
 
 			this.DragMove();
 		}
 
-		protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e) {
+		protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
+		{
 			base.OnKeyDown(e);
 
-			if (e.Key == Key.Escape) {
+			if (e.Key == Key.Escape)
+			{
 				this.CloseAllServices();
 			}
 		}
 
-		private void CloseAllServices() {
+		private void CloseAllServices()
+		{
 			List<IScreenService> currentServices = new List<IScreenService>(this.currentServices);
-			foreach (IScreenService service in currentServices) {
+			foreach (IScreenService service in currentServices)
+			{
 				service.CloseService();
 			}
 
@@ -189,7 +219,8 @@ namespace Rooler {
 			Debug.Assert(this.currentServices.Count == 0);
 		}
 
-		protected override void OnMouseWheel(MouseWheelEventArgs e) {
+		protected override void OnMouseWheel(MouseWheelEventArgs e)
+		{
 			base.OnMouseWheel(e);
 
 			this.Preferences.IsExpanded = true;
@@ -200,7 +231,8 @@ namespace Rooler {
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
-		protected void OnPropertyChanged(string propertyName) {
+		protected void OnPropertyChanged(string propertyName)
+		{
 			Debug.Assert(this.GetType().GetProperty(propertyName) != null);
 			if (this.PropertyChanged != null)
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
